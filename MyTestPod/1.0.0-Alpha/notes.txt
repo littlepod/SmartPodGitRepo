@@ -1,0 +1,159 @@
+steps for trying pods for reference
+
+   - Distributing only Binary (framework as .zip)
+    - Distributing Source code 
+    - Distributing  Binary and Source Code both
+
+
+First time installation and setup
+1. Install Cocoapods
+	$ sudo gem install cocoapods
+	Follow instrucation at https://cocoapods.org
+2. Verrify that its been successfuly installed
+	$ pod --version
+3. Register users to cocoapods through CocoaPods API
+$ pod trunk register EMAIL [NAME]
+Example: 	$ pod <email> [name]	MyGenie
+It will send link for verification to the given email.More than one user can be registered which can own and mangae pod
+Note: More cocoapods registered user (regiser thru above command) can be added once pod is deployd to cocoapods by command  $pod trunk add-owner [POD_NAME] [OWNER_EMAIL]
+    4. Create Podspec template file 
+	Create a seperate fodler to keep Podspec file
+	$ mkdir MyGeniePod
+	$ cd MyGeniePod
+	$ pod create MyGeniePod.podspec		// to create podspec in current directory
+5. Update MyGeniePod.podspec file.
+  	- Open Xcode and update its fields as requied ( a working sample podspec file for a version is attached
+ 	with document)
+	- Follow https://guides.cocoapods.org/syntax/podspec.html for details forPodspec 
+6. Validate MyGeniePod.podspec file “lint” (should be error free)
+	$ pod spec lint MyGeniePod.podspec
+7. Validate MyGeniePod pod by using it in client sample app
+	Follow section “Using local MyGeniePod pod” 
+8. Deploy Podspec file to Cocoapods repo
+$ pod trunk push [PODSPEC_FILE]
+	Example: 	$ pod trunk push MyGeniePod.podspec
+9. Check and confirm that latest podspec file is up for public by visiting below link and podspec version
+	https://cocoapods.org/pods/MyGeniePod
+	It can be also verified by command $ pod trunk info MyGeniePod
+10. Verify the public pod by using it in client sample app 
+	Follow section	“Using public MyGeniePod pod
+
+Steps for updating MyGeniePod pod at CocoaPods public repo
+These steps are requierd when MyGeniePod pods are already published and when a new version of SDK is released 
+
+To look at different versions published: https://cocoapods.org/pods/MyGeniePod
+				   $ pod trunk info MyGeniePod
+
+1. Find newly released iOS framework
+	<<link google-cast-sdk>>
+	
+    3. Open notepad and list down new version information in order 
+	
+
+4. Open MyGeniePod.podspec in Xcode and update below fields with starting entry in scratch.txt file 
+		s.version=
+		s.source=
+5. Validate MyGeniePod.podspec file through “lint” (should Pass)
+	$ pod spec lint MyGeniePod.podspec
+7. Validate MyGeniePod pod by using it in client sample app
+	Follow section “Using local MyGeniePod pod” 
+8. Deploy updated Podspec file for selected version to Cocoapods
+$ pod trunk push [PATH]
+	Example: 	$ pod trunk push MyGeniePod.podspec
+9. Check and confirm that latest podspec file is up for public by visiting below link and podspec version
+	https://cocoapods.org/pods/MyGeniePod
+	It can be also verified by command 
+$ pod trunk info MyGeniePod
+10. Go back to point 4 and follow steps for all versions listed in scratch.txt file
+11. Validate one by one all pods by integrating them into client
+
+
+
+
+Publishing Pod @ git public or private repository
+
+Follow below link best explained or follow steps for creating pod “MyTestPod” and uesd for HelloWorld
+https://guides.cocoapods.org/making/private-cocoapods.html
+
+1. Create git repository (http://github.com)
+	Created repositoy with name 	“MyGeniePodGitRepo”
+https://github.com/littlepod/MyGeniePodGitRepo
+
+2. Add git repo (MyGeniePodGitRepo) to installed CocoaPods repo list
+	$ pod repo add [REPO_NAME] [GIT_URL]
+	$ pod repo add MyTestPod https://github.com/littlepod/MyGeniePodGitRepo
+
+3. Create and update podspec file to any folder of choice
+	$ touch MyTestPod.podspec
+4. Validate it with lint and with client app
+	$ pod spec lint 
+
+5.  Add Podspec file to github repo
+$ pod repo push [REPO_NAME] [PODSPEC_NAME]
+$ pod repo push MyTestPod MyTestPod.podspec 
+This will create a folder structre with version mentioned in podspec file. Each time we increase version and push to repo, a new folder with version will be added. Simlar folder structure will also be reflected at CocoaPods repo foldar locally
+	$ cd ~/.cocoapods/repos
+
+6. Go to your application folder and terminal and update Podfile to fetch newly created pod
+	$ cd HelloWorld
+	$ pod init
+	$ vim Podfile
+
+	source 'https://github.com/littlepod/MyGeniePodGitRepo.git'
+	pod ‘MyTestPod’, ‘1.0.0’
+
+
+6. To remove pod from github
+	$pod repo remove [POD_NAME]
+	
+
+
+Publishing Pod personal or shared network system
+
+
+
+
+
+Integrating MyGeniePod frameowrk to client application
+
+1. Open terminal at application project folder
+
+$ cd HelloWorld
+
+2. Create template Podfile
+	$ pot init
+	\\ this will create Podfile
+3. Update Podfile with target pod name, version and source (if its not at CocoaPods repo)
+
+Example:
+>> If Pod (podspec) is public at CocoaPods repo (By default source is referenced at Cocoapods repo)
+pod ‘MyGeniePod’
+
+>> If Pod (podspec) is either private or public at git repo (example)
+pod 'ThreeRingControlSDK', :git =>'https://github.com/<<gituser>>/ThreeRingControlSDK.git', :tag => '1.0.1'
+or put source info at top of Podfile
+source = ‘https://github.com/<<gituser>>/ThreeRingControlSDK.git'
+>> If Pod (podspec) is local to desktop or shared location
+pod 'ThreeRingControlSDK', :path => '/Users/<<user name>>/Desktop/cocoapods-try/FromRay/ThreeRingControlSDK'
+
+
+	Sample Podfile for HelloWorld application
+
+
+
+
+	
+
+
+
+
+
+
+
+
+4. Install and integrate listed pod in project
+$ pod install
+
+5. Open .xcworkspace in Xcode and build your project (.xcodeproj is no longer required)
+
+
